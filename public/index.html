@@ -13,5 +13,13 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script src="/lib/error.js"></script>
+    <script>
+    errLogReport({
+      data: {
+        productname: 'dj-log' // 产品名称
+      },
+      url: 'http://127.0.0.1:7001/api/log' // 上报地址
+    })</script>
   </body>
 </html>
