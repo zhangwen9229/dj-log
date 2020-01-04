@@ -4,6 +4,8 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
+import './bootstrap'
+
 Vue.config.productionTip = false
 
 // 系统错误捕获
