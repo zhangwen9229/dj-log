@@ -35,8 +35,8 @@ export default {
     }
   },
   mounted () {
-    socket.on('connect', (data) => {
-      console.log(data)
+    socket.on('connect', () => {
+      console.log(socket.id)
     })
     socket.emit('exchange', {
       target: 'Dkn3UXSu8_jHvKBmAAHW',
