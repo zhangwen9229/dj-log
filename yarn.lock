@@ -860,6 +860,11 @@
   resolved "https://registry.npm.taobao.org/@types/q/download/@types/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha1-aQoUdbhPKohP0HzXl8APXzE1bqg=
 
+"@types/socket.io-client@^1.4.32":
+  version "1.4.32"
+  resolved "http://registry.m.jd.com/@types/socket.io-client/download/@types/socket.io-client-1.4.32.tgz#988a65a0386c274b1c22a55377fab6a30789ac14"
+  integrity sha1-mIploDhsJ0scIqVTd/q2oweJrBQ=
+
 "@types/webpack-env@^1.13.9":
   version "1.14.1"
   resolved "https://registry.npm.taobao.org/@types/webpack-env/download/@types/webpack-env-1.14.1.tgz#0d8a53f308f017c53a5ddc3d07f4d6fa76b790d7"

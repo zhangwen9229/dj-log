@@ -8,8 +8,8 @@ export default class Test extends Vue {
   @Prop() private msg!: string;
 
   render () {
-    return (
-      <div class={styles.div}>{this.msg}</div>
-    )
+      return (
+          <div class={styles.div}>{this.msg}</div>
+      )
   }
 }
