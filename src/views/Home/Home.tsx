@@ -12,7 +12,7 @@ import styles from './home.scss'
     }
 })
 export default class Test extends Vue {
-    cache = []
+    cache: string[] = []
     status = 'idle'
     socket: any;
 
@@ -49,10 +49,12 @@ export default class Test extends Vue {
             }
         )
 
-        this.socket.on('res', (cb: any) => {
+        this.socket.on('res', (data: any) => {
             console.log(' ------ -- - -- - - -- - -')
 
-            console.log(cb)
+            console.log(data)
+
+            Array.prototype.push.apply(this.cache, (JSON.stringify(data) as any))
         })
     }
 
