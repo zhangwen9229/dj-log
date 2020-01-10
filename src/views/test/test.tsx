@@ -1,9 +1,7 @@
 
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
-import './test.scss'
-// const styles = require('./test.scss')
-// console.log(styles)
+import styles from './test.scss'
 
 @Component
 export default class Test extends Vue {
@@ -11,7 +9,7 @@ export default class Test extends Vue {
 
   render () {
     return (
-      <div class="div">{this.msg}</div>
+      <div class={styles.div}>{this.msg}</div>
     )
   }
 }
