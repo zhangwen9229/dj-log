@@ -4,17 +4,17 @@
       <div class="line-index no">No</div>
       <div class="line-os">OS</div>
       <div class="line-url">Url</div>
-      <div class="line-error">Error</div>
+      <div class="line-msg">Message</div>
       <div class="line-ua">UA</div>
       <div class="line-errortime">ErrorTime</div>
-      <div class="line-clientip">ClientIp</div>
+      <div class="line-clientip" :style="showPadding ? {paddingRight: `${this.barwidth}px`} : ''">ClientIp</div>
     </div>
     <div :id="id" class="gliding-window-log">
       <div class="row" v-for="item in logWindow" :id="'log-line-'+item.index" :key="item.index">
         <div class="line-index">{{item.index }}</div>
         <div class="line-os">{{item.line.os || ' '}}</div>
         <div class="line-url">{{item.line.url || ' '}}</div>
-        <div class="line-error">{{item.line.msg || ' '}}</div>
+        <div class="line-msg">{{item.line.msg || ' '}}</div>
         <div class="line-ua">{{item.line.ua || ' '}}</div>
         <div class="line-errortime">{{item.line.errorTime || ' '}}</div>
         <div class="line-clientip">{{item.line.clientIps ? item.line.clientIps.join(',') : ' '}}</div>
@@ -33,7 +33,9 @@ export default {
             tick: 1, // 窗口数
             currentEndIndex: -1, // 记录改变lockScroll状态时的最末log的index
             lockScroll: true, // 滚动锁定，为true时始终滚动条沉底
-            output: []
+            output: [],
+            barwidth: 0,
+            showPadding: false
         }
     },
     computed: {
@@ -159,12 +161,39 @@ export default {
             }
             if (this.isRunning || this.cache.length > 0) {
                 let frequency = Math.min((1 / this.cache.length) * 1000, 100)
-                // let frequency = 1000;
+
                 setTimeout(this.addLine.bind(this), frequency)
+
+                const flag = this.hasScrollbar()
+                if (flag && !this.showPadding) {
+                    this.showPadding = true
+                } else if (!flag && this.showPadding) {
+                    this.showPadding = false
+                }
             }
+        },
+        // 判断是否有滚动条的方法
+        hasScrollbar () {
+            let logBody = document.getElementById(this.id)
+            return (
+                logBody.scrollHeight > (logBody.innerHeight || logBody.clientHeight)
+            )
+        },
+        // 计算滚动条宽度的方法
+        // 新建一个带有滚动条的 div 元素，通过该元素的 offsetWidth 和 clientWidth 的差值即可获得
+        getScrollbarWidth () {
+            var scrollDiv = document.createElement('div')
+            scrollDiv.style.cssText =
+        'width: 99px; height: 99px; overflow: scroll; position: absolute; top: -9999px;'
+            document.body.appendChild(scrollDiv)
+            var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
+            document.body.removeChild(scrollDiv)
+            return scrollbarWidth
         }
     },
     mounted () {
+        this.barwidth = this.getScrollbarWidth()
+        console.log('this.barwidth', this.barwidth)
         this.bindScrollbar()
     }
 }
@@ -178,11 +207,14 @@ export default {
   display: flex;
   flex-direction: column;
   .title-wrap {
+    // position: absolute;
+    // top: 0;
+    // z-index: 2;
+    width: 100%;
     display: flex;
     height: 40px;
-    background-color: #131313!important;
+    background-color: #131313 !important;
     color: #ffffff !important;
-    min-height: 22px;
     > div {
       height: 100%;
       display: flex;
@@ -193,8 +225,8 @@ export default {
     }
     .no {
       width: 40px;
-      justify-content: flex-end;
-      background-color: #131313!important;
+      justify-content: flex-end !important;
+      background-color: #131313 !important;
       color: #ffffff !important;
     }
   }
@@ -206,6 +238,7 @@ export default {
       min-height: 22px;
       display: flex;
       align-items: center;
+      justify-content: center;
       border-right: 1px solid rgba(255, 255, 255, 0.2);
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
@@ -218,7 +251,7 @@ export default {
     flex: 0 0 40px;
     background-color: #2e2e2e;
     text-align: right;
-    justify-content: flex-end;
+    justify-content: flex-end !important;
     padding-right: 10px;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -233,7 +266,7 @@ export default {
     width: 400px;
     flex: 0 0 300px;
   }
-  .line-error {
+  .line-msg {
     flex: 1;
     min-width: 300px;
   }
@@ -259,6 +292,7 @@ export default {
   }
 }
 .gliding-window-log {
+  position: relative;
   overflow: auto;
   flex: 1;
   background-color: #37393d;
@@ -266,5 +300,6 @@ export default {
   position: relative;
   font-size: 16px;
   line-height: 22px;
+  min-height: 300px;
 }
 </style>

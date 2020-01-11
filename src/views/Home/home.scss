@@ -1,9 +1,11 @@
 .logWrap {
-    flex: 1
+    flex: 1;
+    overflow: hidden;
 }
 
 .controllersWrap{
     height: 60px;
+    flex: 0 0 60px;
     display: flex;
     align-items: center;
 }

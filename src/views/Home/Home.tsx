@@ -56,6 +56,10 @@ export default class Test extends Vue {
         this.socket.on('log', (data: any) => {
             console.log(' ------ -- - -- - - -- - -')
             console.log(data)
+            console.log(this.cache.length)
+            if (this.cache.length > 5000) {
+                this.cache = this.cache.slice(0, 500)
+            }
             Array.prototype.push.apply(this.cache, [data])
             this.status = 'running'
         })
