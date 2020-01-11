@@ -51,12 +51,11 @@ export default class Test extends Vue {
         )
 
         this.socket.on('res', (data: any) => {
-            console.log(' ------ -- - -- - - -- - -')
-
             console.log(data)
-
-            // this.cache.push(JSON.stringify(data))
-
+        })
+        this.socket.on('log', (data: any) => {
+            console.log(' ------ -- - -- - - -- - -')
+            console.log(data)
             Array.prototype.push.apply(this.cache, [data])
             this.status = 'running'
         })
