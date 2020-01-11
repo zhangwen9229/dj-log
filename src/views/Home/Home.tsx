@@ -15,6 +15,7 @@ export default class Test extends Vue {
     cache: string[] = []
     status = 'idle'
     socket: any;
+    text: string = 'hello word'
 
     mounted () {
         this.init()
@@ -54,15 +55,21 @@ export default class Test extends Vue {
 
             console.log(data)
 
-            Array.prototype.push.apply(this.cache, (JSON.stringify(data) as any))
+            // this.cache.push(JSON.stringify(data))
+
+            Array.prototype.push.apply(this.cache, [data])
+            this.status = 'running'
         })
     }
 
     render () {
         return (
-            <div class={utils.height100}>
-                <div class={styles.controllersWrap}>111</div>
-                <div>
+            <div class={[utils.height100, utils.vflex]}>
+                <div class={styles.controllersWrap}>
+                    {this.text}
+                    <input v-model={this.text}></input>
+                </div>
+                <div class={styles.logWrap}>
                     <gliding-window-log id="log" cache={this.cache} status={this.status} capacity={50}></gliding-window-log>
                 </div>
             </div>

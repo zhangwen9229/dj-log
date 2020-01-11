@@ -1,3 +1,13 @@
 .height100 {
   height: 100vh;
 }
+
+
+.flex {
+  display: flex;
+  flex-direction: row;
+}
+.vflex {
+  display: flex;
+  flex-direction: column;
+}
