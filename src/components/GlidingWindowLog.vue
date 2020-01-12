@@ -40,7 +40,8 @@ export default {
       lockScroll: true, // 滚动锁定，为true时始终滚动条沉底
       output: [],
       barwidth: 0,
-      showPadding: false
+      showPadding: false,
+      setTimeoutMap: {}
     }
   },
   computed: {
@@ -172,7 +173,11 @@ export default {
           // this.output = this.output
         }
 
-        setTimeout(this.addLine.bind(this), 100)
+        const st = setTimeout(() => {
+          this.addLine()
+          delete this.setTimeoutMap[st]
+        }, 100)
+        this.setTimeoutMap[st] = 1
 
         const flag = this.hasScrollbar()
         if (flag && !this.showPadding) {
@@ -201,6 +206,9 @@ export default {
       return scrollbarWidth
     },
     clear () {
+      for (const key in this.setTimeoutMap) {
+        clearInterval(key)
+      }
       this.output = []
     }
   },
@@ -208,6 +216,12 @@ export default {
     this.barwidth = this.getScrollbarWidth()
     console.log('this.barwidth', this.barwidth)
     this.bindScrollbar()
+  },
+  beforeDestroy () {
+    for (const key in this.setTimeoutMap) {
+      console.log(key)
+      clearInterval(key)
+    }
   }
 }
 </script>
