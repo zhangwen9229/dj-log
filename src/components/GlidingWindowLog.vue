@@ -1,6 +1,6 @@
 <template>
   <div class="gliding-window-log-wrap">
-    <div class="title-wrap">
+    <div class="title-wrap" ref="windowHeaderRef">
       <div class="line-index no">No</div>
       <div class="line-os">OS</div>
       <div class="line-url">Url</div>
@@ -13,14 +13,18 @@
         :style="showPadding ? {paddingRight: `${this.barwidth}px`} : ''"
       >ClientIp</div>
     </div>
-    <div :id="id" class="gliding-window-log">
+    <div :id="id" class="gliding-window-log" ref="windowContentRef">
       <div class="row" v-for="item in logWindow" :id="'log-line-'+item.index" :key="item.index">
         <div class="line-index">{{item.index }}</div>
         <div class="line-os">{{item.line.os || ' '}}</div>
         <div class="line-url">{{item.line.url || ' '}}</div>
-        <div class="line-msg">{{item.line.msg || ' '}}</div>
+        <div class="line-msg">
+          <div>{{item.line.msg || ' '}}</div>
+        </div>
         <div class="line-ua">{{item.line.ua || ' '}}</div>
-        <div class="line-extra">{{ item.line.extra ? JSON.stringify(item.line.extra) : ' '}}</div>
+        <div class="line-extra">
+          <div>{{ item.line.extra ? JSON.stringify(item.line.extra) : ' '}}</div>
+        </div>
         <div class="line-errortime">{{item.line.errorTime || ' '}}</div>
         <div class="line-clientip">{{item.line.clientIps ? item.line.clientIps.join(',') : ' '}}</div>
         <!-- <div v-if="item.line" class="line-content">{{item.line}}</div> -->
@@ -216,6 +220,24 @@ export default {
     this.barwidth = this.getScrollbarWidth()
     console.log('this.barwidth', this.barwidth)
     this.bindScrollbar()
+
+    let scrollLeftStart = 0
+    let scrollLeftEnd = 0
+    let timer = -1
+    this.$refs.windowContentRef.addEventListener('scroll', (e) => {
+      scrollLeftStart = e.target.scrollLeft
+      clearTimeout(timer)
+      if (!this.$refs.windowHeaderRef.classList.has('scroll')) {
+        this.$refs.windowHeaderRef.classList.add('scroll')
+      }
+      this.$refs.windowHeaderRef.scrollLeft = e.target.scrollLeft
+
+      timer = setTimeout(() => {
+        if (scrollLeftStart === e.target.scrollLeft) {
+          this.$refs.windowHeaderRef.classList.remove('scroll')
+        }
+      }, 1000)
+    }, false)
   },
   beforeDestroy () {
     for (const key in this.setTimeoutMap) {
@@ -242,6 +264,9 @@ export default {
     height: 40px;
     background-color: #131313 !important;
     color: #ffffff !important;
+    &.scroll{
+      overflow-x: auto;
+    }
     > div {
       height: 100%;
       display: flex;
@@ -261,14 +286,17 @@ export default {
     display: flex;
     align-items: stretch;
     min-height: 22px;
+    width: 100%;
     > div {
       min-height: 22px;
+      max-height: 100px;
       display: flex;
-      align-items: center;
+      // align-items: center;
       justify-content: center;
       border-right: 1px solid rgba(255, 255, 255, 0.2);
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       word-break: break-word;
+      overflow-y: auto;
     }
   }
   .line-index {
@@ -300,6 +328,7 @@ export default {
   }
   .line-ua {
     width: 300px;
+    flex-shrink: 0;
   }
   .line-extra {
     width: 100px;
