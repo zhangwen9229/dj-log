@@ -23,7 +23,7 @@
         </div>
         <div class="line-ua">{{item.line.ua || ' '}}</div>
         <div class="line-extra">
-          <div>{{ item.line.extra ? JSON.stringify(item.line.extra) : ' '}}</div>
+          <pre>{{ item.line.extra ? getExraMsg(item.line.extra) : ' '}}</pre>
         </div>
         <div class="line-errortime">{{item.line.errorTime || ' '}}</div>
         <div class="line-clientip">{{item.line.clientIps ? item.line.clientIps.join(',') : ' '}}</div>
@@ -91,6 +91,25 @@ export default {
     }
   },
   methods: {
+    getExraMsg (extra) {
+      let msg = ''
+      extra = extra || {}
+      console.log('----sdg-s-dg--')
+      console.log(extra)
+      for (const key in extra) {
+        if (extra.hasOwnProperty(key)) {
+          let value = extra[key]
+          try {
+            value = JSON.parse(value)
+          } catch (error) {
+          }
+          value = value.componentStack || value
+          console.log(value.message, JSON.stringify(value))
+          msg += `${key}:\n${value}\n`
+        }
+      }
+      return msg
+    },
     scrollToBottom () {
       let logBody = document.getElementById(this.id)
       if (logBody) {
@@ -221,22 +240,12 @@ export default {
     console.log('this.barwidth', this.barwidth)
     this.bindScrollbar()
 
-    let scrollLeftStart = 0
-    let scrollLeftEnd = 0
-    let timer = -1
     this.$refs.windowContentRef.addEventListener('scroll', (e) => {
-      scrollLeftStart = e.target.scrollLeft
-      clearTimeout(timer)
-      if (!this.$refs.windowHeaderRef.classList.has('scroll')) {
-        this.$refs.windowHeaderRef.classList.add('scroll')
-      }
       this.$refs.windowHeaderRef.scrollLeft = e.target.scrollLeft
+    }, false)
 
-      timer = setTimeout(() => {
-        if (scrollLeftStart === e.target.scrollLeft) {
-          this.$refs.windowHeaderRef.classList.remove('scroll')
-        }
-      }, 1000)
+    this.$refs.windowHeaderRef.addEventListener('scroll', (e) => {
+      this.$refs.windowContentRef.scrollLeft = e.target.scrollLeft
     }, false)
   },
   beforeDestroy () {
@@ -264,8 +273,11 @@ export default {
     height: 40px;
     background-color: #131313 !important;
     color: #ffffff !important;
-    &.scroll{
-      overflow-x: auto;
+    overflow-x: auto;
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
     }
     > div {
       height: 100%;
@@ -289,7 +301,7 @@ export default {
     width: 100%;
     > div {
       min-height: 22px;
-      max-height: 100px;
+      max-height: 200px;
       display: flex;
       // align-items: center;
       justify-content: center;
@@ -297,6 +309,11 @@ export default {
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       word-break: break-word;
       overflow-y: auto;
+      pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        margin: 0;
+      }
     }
   }
   .line-index {
@@ -319,20 +336,27 @@ export default {
     flex: 0 0 80px;
   }
   .line-url {
-    width: 400px;
-    flex: 0 0 300px;
+    width: 200px;
+    flex: 0 0 200px;
+    text-align: left;
   }
   .line-msg {
-    flex: 1;
-    min-width: 300px;
+    width: 100px;
+    flex: 0 0 100px;
+    text-align: left;
   }
   .line-ua {
     width: 300px;
     flex-shrink: 0;
+    text-align: left;
   }
   .line-extra {
-    width: 100px;
-    flex: 0 0 80px;
+    // width: 200px;
+    // flex: 0 0 200px;
+    justify-self: start;
+    flex: 1;
+    min-width: 200px;
+    text-align: left;
   }
   .line-errortime {
     width: 160px;
