@@ -101,9 +101,13 @@ export default {
           let value = extra[key]
           try {
             value = JSON.parse(value)
+            console.log(value)
           } catch (error) {
           }
           value = value.componentStack || value
+          if (typeof value === 'object') {
+            value = JSON.stringify(value)
+          }
           console.log(value.message, JSON.stringify(value))
           msg += `${key}:\n${value}\n`
         }
@@ -227,6 +231,9 @@ export default {
       var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
       document.body.removeChild(scrollDiv)
       return scrollbarWidth
+    },
+    clearTmp () {
+      this.output = []
     },
     clear () {
       for (const key in this.setTimeoutMap) {

@@ -22,7 +22,8 @@ export default class Test extends Vue {
   }
 
   init () {
-    this.socket = io('http://localhost:7001')
+    console.log(process.env)
+    this.socket = io(process.env.VUE_APP_IO_BASE_URL)
     this.socket.on('connect', () => {
       console.log(this.socket.id)
       this.connected = true
@@ -74,6 +75,10 @@ export default class Test extends Vue {
     (this.$refs.log as any).clear()
   }
 
+  onClearTmp () {
+    (this.$refs.log as any).clearTmp()
+  }
+
   onStop () {
     this.status = 'stop'
   }
@@ -95,6 +100,7 @@ export default class Test extends Vue {
             <el-button type="success" onclick={this.onRestartSocket} disabled={this.connected}>继续监听</el-button>
             <el-button type="danger" onclick={this.onStop} disabled={this.status !== 'running'}>停止</el-button>
             <el-button type="primary" onclick={this.onStart} disabled={this.status === 'running' || !this.connected}>继续</el-button>
+            <el-button onclick={this.onClearTmp}>清空</el-button>
           </el-row>
         </div>
         <div class={styles.logWrap}>
