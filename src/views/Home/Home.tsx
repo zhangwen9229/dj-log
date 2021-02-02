@@ -16,6 +16,7 @@ export default class Test extends Vue {
   status = 'idle'
   socket: any;
   connected = false
+  onlines = 0;
 
   mounted () {
     this.init()
@@ -33,36 +34,43 @@ export default class Test extends Vue {
       console.log('disconnect')
       this.connected = false
     })
-    this.socket.emit(
-      'exchange',
-      {
-        target: 'Dkn3UXSu8_jHvKBmAAHW',
-        payload: {
-          msg: 'test'
-        }
-      }, (data: any) => {
-        console.log(data)
-      }
-    )
 
-    this.socket.emit(
-      'exchange',
-      {
-        target: 'Dkn3UXSu8_jHvKBmAAHW',
-        payload: {
-          msg: '同比'
-        }
-      }, (data: any) => {
-        console.log(data) // data will be 'woot'
-      }
-    )
+    // 向服务端发送数据
+    // this.socket.emit(
+    //   'exchange',
+    //   {
+    //     target: 'Dkn3UXSu8_jHvKBmAAHW',
+    //     payload: {
+    //       msg: 'test'
+    //     }
+    //   }, (data: any) => {
+    //     console.log(data)
+    //   }
+    // )
 
-    this.socket.on('res', (data: any) => {
+    // this.socket.emit(
+    //   'exchange',
+    //   {
+    //     target: 'Dkn3UXSu8_jHvKBmAAHW',
+    //     payload: {
+    //       msg: '同比'
+    //     }
+    //   }, (data: any) => {
+    //     console.log(data) // data will be 'woot'
+    //   }
+    // )
+
+    this.socket.on('connected', (data: any) => {
       console.log(data)
     })
+
+    this.socket.on('changePersonSize', (size: number) => {
+      this.onlines = size
+    })
+
     this.socket.on('log', (data: any) => {
-      console.log(' ------ -- - -- - - -- - -')
-      console.log(data)
+      // console.log(' ------ -- - -- - - -- - -')
+      // console.log(data)
       Array.prototype.push.apply(this.cache, [data])
     })
   }
@@ -96,6 +104,7 @@ export default class Test extends Vue {
       <div class='height100 vflex'>
         <div class={styles.controllersWrap}>
           <el-row class={['flex1', styles.row]} type="flex" justify="end">
+            <el-col class={styles.onlines}>当前人数:{this.onlines}</el-col>
             <el-button onclick={this.onClear} disabled={!this.connected}>停止监听并清空</el-button>
             <el-button type="success" onclick={this.onRestartSocket} disabled={this.connected}>继续监听</el-button>
             <el-button type="danger" onclick={this.onStop} disabled={this.status !== 'running'}>停止</el-button>
