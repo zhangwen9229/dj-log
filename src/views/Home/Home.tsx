@@ -5,13 +5,14 @@ import io from 'socket.io-client'
 
 import '@/assets/css/utils.scss'
 import styles from './home.module.scss'
+import { globalSocket } from '@/Business/io'
 
 @Component({
   components: {
     'gliding-window-log': GlidingWindowLog
   }
 })
-export default class Test extends Vue {
+export default class Home extends Vue {
   cache: string[] = []
   status = 'idle'
   socket: any;
@@ -22,43 +23,35 @@ export default class Test extends Vue {
     this.init()
   }
 
+  ioConnected () {
+    // 向服务端发送数据
+    this.socket.emit('exchange', {
+
+    })
+
+    // 接收服务端返回数据
+    this.socket.on(this.socket.id, (data: any) => {
+      console.log(data)
+    })
+  }
+
+  emitToServer () {
+
+  }
+
   init () {
     console.log(process.env)
-    this.socket = io(process.env.VUE_APP_IO_BASE_URL)
+    this.socket = globalSocket
     this.socket.on('connect', () => {
       console.log(this.socket.id)
       this.connected = true
+      this.ioConnected()
       this.onStart()
     })
     this.socket.on('disconnect', () => {
       console.log('disconnect')
       this.connected = false
     })
-
-    // 向服务端发送数据
-    // this.socket.emit(
-    //   'exchange',
-    //   {
-    //     target: 'Dkn3UXSu8_jHvKBmAAHW',
-    //     payload: {
-    //       msg: 'test'
-    //     }
-    //   }, (data: any) => {
-    //     console.log(data)
-    //   }
-    // )
-
-    // this.socket.emit(
-    //   'exchange',
-    //   {
-    //     target: 'Dkn3UXSu8_jHvKBmAAHW',
-    //     payload: {
-    //       msg: '同比'
-    //     }
-    //   }, (data: any) => {
-    //     console.log(data) // data will be 'woot'
-    //   }
-    // )
 
     this.socket.on('connected', (data: any) => {
       console.log(data)
@@ -101,7 +94,7 @@ export default class Test extends Vue {
 
   render () {
     return (
-      <div class='height100 vflex'>
+      <div class={`vflex ${styles.containerWrap}`}>
         <div class={styles.controllersWrap}>
           <el-row class={['flex1', styles.row]} type="flex" justify="end">
             <el-col class={styles.onlines}>当前人数:{this.onlines}</el-col>
