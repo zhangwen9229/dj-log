@@ -9,23 +9,10 @@
     text-color="#fff"
     active-text-color="#ffd04b"
   >
-    <el-menu-item index="1">日志监控</el-menu-item>
-    <el-submenu index="2">
-      <template slot="title">我的工作台</template>
-      <el-menu-item index="2-1">选项1</el-menu-item>
-      <el-menu-item index="2-2">选项2</el-menu-item>
-      <el-menu-item index="2-3">选项3</el-menu-item>
-      <el-submenu index="2-4">
-        <template slot="title">选项4</template>
-        <el-menu-item index="2-4-1">选项1</el-menu-item>
-        <el-menu-item index="2-4-2">选项2</el-menu-item>
-        <el-menu-item index="2-4-3">选项3</el-menu-item>
-      </el-submenu>
-    </el-submenu>
-    <el-menu-item index="3" disabled>消息中心</el-menu-item>
-    <el-menu-item index="4"
-      ><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item
-    >
+    <el-menu-item index="home">日志监控平台</el-menu-item>
+    <el-menu-item index="mta">埋点监控</el-menu-item>
+    <!-- <el-menu-item index="2"
+      ><a href="" target="_blank">test</a></el-menu-item> -->
   </el-menu>
 </template>
 
@@ -33,12 +20,22 @@
 export default {
   data () {
     return {
-      activeIndex: 0
+      activeIndex: 'home'
     }
   },
-
-  handleSelect (key, keyPath) {
-    console.log(key, keyPath)
+  methods: {
+    handleSelect (key, keyPath) {
+      console.log(key, keyPath)
+      this.$router.push({ name: key })
+    }
+  },
+  watch: {
+    '$route': {
+      handler (route) {
+        this.activeIndex = route.name
+      },
+      immediate: true
+    }
   }
 }
 </script>

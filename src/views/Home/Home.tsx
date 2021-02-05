@@ -1,77 +1,69 @@
 
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import GlidingWindowLog from '@/components/GlidingWindowLog.vue'
-import io from 'socket.io-client'
 
 import '@/assets/css/utils.scss'
 import styles from './home.module.scss'
-import { globalSocket } from '@/Business/io'
+import { closeIo, globalSocket, listenServer, openIo, removeServerListner } from '@/Business/io'
+import { mapState } from 'vuex'
 
 @Component({
   components: {
     'gliding-window-log': GlidingWindowLog
+  },
+  computed: {
+    ...mapState({
+      '_onlines': (state: any) => state.onlines,
+      ioHasConnected (state: any) {
+        if (state.ioHasConnected) {
+          this.ioConnected()
+          this.onStart()
+        }
+        return state.ioHasConnected
+      }
+    })
   }
 })
 export default class Home extends Vue {
   cache: string[] = []
   status = 'idle'
   socket: any;
-  connected = false
-  onlines = 0;
+
+  public get connected () : string {
+    return (this as any).ioHasConnected
+  }
+
+  public get onlines () : string {
+    return (this as any)._onlines
+  }
 
   mounted () {
     this.init()
   }
 
   ioConnected () {
-    // 向服务端发送数据
-    this.socket.emit('exchange', {
-
-    })
-
     // 接收服务端返回数据
-    this.socket.on(this.socket.id, (data: any) => {
-      console.log(data)
-    })
+    // listenServer('receiveLog', this.listenServer)
   }
 
-  emitToServer () {
-
+  listenServerLog (data: any) {
+    Array.prototype.push.apply(this.cache, [data])
   }
 
   init () {
     console.log(process.env)
-    this.socket = globalSocket
-    this.socket.on('connect', () => {
-      console.log(this.socket.id)
-      this.connected = true
-      this.ioConnected()
-      this.onStart()
-    })
-    this.socket.on('disconnect', () => {
-      console.log('disconnect')
-      this.connected = false
-    })
 
-    this.socket.on('connected', (data: any) => {
-      console.log(data)
-    })
+    listenServer('log', this.listenServerLog, true)
+  }
 
-    this.socket.on('changePersonSize', (size: number) => {
-      this.onlines = size
-    })
-
-    this.socket.on('log', (data: any) => {
-      // console.log(' ------ -- - -- - - -- - -')
-      // console.log(data)
-      Array.prototype.push.apply(this.cache, [data])
-    })
+  beforeDestroy () {
+    removeServerListner('log', this.listenServerLog, true)
   }
 
   onClear () {
     console.log('clear')
     // clear 前必须关闭socket 监听
-    this.socket.close()
+    closeIo()
     this.onStop();
     (this.$refs.log as any).clear()
   }
@@ -89,7 +81,7 @@ export default class Home extends Vue {
   }
 
   onRestartSocket () {
-    this.socket.open()
+    openIo()
   }
 
   render () {

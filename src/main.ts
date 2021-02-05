@@ -1,3 +1,4 @@
+
 import Vue from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
@@ -6,10 +7,23 @@ import store from './store'
 
 import './bootstrap'
 
+declare global {
+  interface Window {
+    $bus: Vue
+  }
+}
+
+declare module 'vue/types/vue' {
+  // 3. 声明为 Vue 补充的东西
+  interface Vue {
+    $bus: Vue
+  }
+}
+
 Vue.config.productionTip = false
 
 // 系统错误捕获
-const errorHandler = (error:any, vm: any, info: any) => {
+const errorHandler = (error: any, vm: any, info: any) => {
   console.error('抛出全局异常')
   console.error(vm)
   console.error(error)
@@ -27,10 +41,16 @@ const errorHandler = (error:any, vm: any, info: any) => {
 
 Vue.config.errorHandler = errorHandler
 Vue.prototype.$throw = errorHandler
+window.$bus = Vue.prototype.$bus = new Vue()
 
 new Vue({
   router,
   store,
+  mounted () {
+    window.onresize = (e) => {
+      window.$bus.$emit('windowResize', e)
+    }
+  },
   render: h => h(App)
 }).$mount('#app')
 
