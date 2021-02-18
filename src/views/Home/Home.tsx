@@ -47,11 +47,12 @@ export default class Home extends Vue {
   }
 
   listenServerLog (data: any) {
+    console.log(data)
     Array.prototype.push.apply(this.cache, [data])
   }
 
   init () {
-    console.log(process.env)
+    console.log('这里', process.env)
 
     listenServer('log', this.listenServerLog, true)
   }

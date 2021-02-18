@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-02-05 11:39:36
  * @LastEditors: zhangwenshun
- * @LastEditTime: 2021-02-05 16:48:51
+ * @LastEditTime: 2021-02-09 21:08:10
  * @title: socket相关操作
  * @created by: zhangwenshun
  */
@@ -68,8 +68,8 @@ export function sendToServer (data) {
 }
 
 export function listenServer (eventName, callback, isBroadcast: boolean = false) {
-  if (!ioHasConnected) { return }
   const realEventName = isBroadcast ? eventName : `${globalSocket.id}_${eventName}`
+  console.log('realEventName', realEventName)
   // 接收服务端返回数据
   globalSocket.on(realEventName, callback)
 }
