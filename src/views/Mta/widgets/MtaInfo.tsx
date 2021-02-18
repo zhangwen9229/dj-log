@@ -64,6 +64,7 @@ export default class MtaInfo extends Vue {
 
     clear () {
       this.originDataList = []
+      this.dataList = []
     }
 
     render () {

@@ -64,10 +64,10 @@ export default class Home extends Vue {
                   </el-select>
                 </el-form-item> */}
                 <el-form-item>
-                  <el-button type="primary" click={() => this.query()}>查询</el-button>
+                  <el-button type="primary" onclick={() => this.query()}>查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                  <el-button click={this.clear}>清空</el-button>
+                  <el-button onclick={this.clear}>清空</el-button>
                 </el-form-item>
               </el-form>
 
