@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-02-05 11:39:36
  * @LastEditors: zhangwenshun
- * @LastEditTime: 2021-02-09 21:08:10
+ * @LastEditTime: 2021-02-19 10:58:19
  * @title: socket相关操作
  * @created by: zhangwenshun
  */
@@ -30,6 +30,9 @@ globalSocket.on('connect', () => {
   })
   ioHasConnected = true
   changeIoState()
+  listenServer('reciveInfo', (data) => {
+
+  })
 })
 
 globalSocket.on('ShakeHandsWithServer', (data: any) => {
